@@ -2,9 +2,9 @@
 
 namespace Shortcut
 {
-    internal class HotkeyPressedEventArgs : EventArgs
+    public class HotkeyPressedEventArgs : EventArgs
     {
-        internal Hotkey Hotkey { get; private set; }
+        public Hotkey Hotkey { get; }
 
         internal HotkeyPressedEventArgs(Hotkey hotkey)
         {

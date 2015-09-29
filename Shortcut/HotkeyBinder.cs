@@ -13,7 +13,7 @@ namespace Shortcut
     {
         private readonly HotkeyContainer container = new HotkeyContainer();
         private readonly HotkeyWindow hotkeyWindow = new HotkeyWindow();
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="HotkeyBinder"/> class.
         /// </summary>
@@ -59,9 +59,9 @@ namespace Shortcut
         /// <param name="keys">The keys that constitute this hotkey.</param>
         /// <exception cref="HotkeyAlreadyBoundException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public HotkeyCallback Bind(Modifiers modifiers, Keys keys)
+        public void Bind(Modifiers modifiers, Keys keys, Action<HotkeyPressedEventArgs> hotkeyPressed)
         {
-            return Bind(new Hotkey(modifiers, keys));
+            Bind(new Hotkey(modifiers, keys), hotkeyPressed);
         }
 
         /// <summary>
@@ -69,16 +69,16 @@ namespace Shortcut
         /// </summary>
         /// <exception cref="HotkeyAlreadyBoundException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public HotkeyCallback Bind(Hotkey hotkeyCombo)
+        public void Bind(Hotkey hotkeyCombo, Action<HotkeyPressedEventArgs> hotkeyPressed)
         {
             if (hotkeyCombo == null) 
-                throw new ArgumentNullException("hotkeyCombo");
+                throw new ArgumentNullException(nameof(hotkeyCombo));
 
-            HotkeyCallback callback = new HotkeyCallback();
-            container.Add(hotkeyCombo, callback);
+            if (hotkeyPressed == null)
+                throw new ArgumentNullException(nameof(hotkeyPressed));
+
+            container.Add(hotkeyCombo, hotkeyPressed);
             RegisterHotkey(hotkeyCombo);
-
-            return callback;
         }
 
         private void RegisterHotkey(Hotkey hotkeyCombo)
@@ -126,17 +126,9 @@ namespace Shortcut
 
         private void OnHotkeyPressed(object sender, HotkeyPressedEventArgs e)
         {
-            HotkeyCallback callback = container.Find(e.Hotkey);
+            var callback = container.Find(e.Hotkey);
             
-            if (!callback.Assigned)
-            {
-                throw new InvalidOperationException(
-                    "You did not specify a callback for the hotkey: \"" + e.Hotkey + "\". It's not your fault, " +
-                    "because it wasn't possible to design the HotkeyBinder class in such a way that this is " +
-                    "a statically typed pre-condition, but please specify a callback.");
-            }
-
-            callback.Invoke();
+            callback?.Invoke(e);
         }
 
         /// <inheritdoc />

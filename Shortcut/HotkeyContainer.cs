@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Shortcut
 {
     internal class HotkeyContainer
     {
-        private readonly IDictionary<Hotkey, HotkeyCallback> container;
+        private readonly IDictionary<Hotkey, Action<HotkeyPressedEventArgs>> container;
 
         internal HotkeyContainer()
         {
-            container = new Dictionary<Hotkey, HotkeyCallback>();
+            container = new Dictionary<Hotkey, Action<HotkeyPressedEventArgs>>();
         }
 
-        internal void Add(Hotkey hotkey, HotkeyCallback callback)
+        internal void Add(Hotkey hotkey, Action<HotkeyPressedEventArgs> callback)
         {
             if (container.ContainsKey(hotkey))
             {
@@ -34,7 +35,7 @@ namespace Shortcut
             container.Remove(hotkey);
         }
 
-        internal HotkeyCallback Find(Hotkey hotkey)
+        internal Action<HotkeyPressedEventArgs> Find(Hotkey hotkey)
         {
             return container[hotkey];
         }
