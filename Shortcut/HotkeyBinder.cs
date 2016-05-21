@@ -13,6 +13,11 @@ namespace Shortcut
     {
         private readonly HotkeyContainer _container;
         private readonly HotkeyWindow _hotkeyWindow;
+
+        /// <summary>
+        /// Enables/disables all hotkeys which were bound by this instance
+        /// </summary>
+        public bool HotkeysEnabled { get; set; }
         
         /// <summary>
         /// Initializes a new instance of the <see cref="HotkeyBinder"/> class.
@@ -106,6 +111,9 @@ namespace Shortcut
 
         private void OnHotkeyPressed(object sender, HotkeyPressedEventArgs e)
         {
+            if (!HotkeysEnabled)
+                return;
+
             var callback = _container.Find(e.Hotkey);
             callback?.Invoke(e);
         }
