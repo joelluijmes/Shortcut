@@ -17,7 +17,7 @@ namespace Shortcut
         /// <summary>
         /// Enables/disables all hotkeys which were bound by this instance
         /// </summary>
-        public bool HotkeysEnabled { get; set; }
+        public bool HotkeysEnabled { get; set; } = true;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="HotkeyBinder"/> class.
